@@ -1,34 +1,44 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/officemaid/app-api/routes"
 )
 
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	// app.Use(cors.New(cors.Config{
+	// 	AllowCredentials: true,
+	// 	AllowOrigins:     "*",
+	// }))
 
-		password := "123"
-		dbHash := "$2a$12$lZRJf/dTrnSxJ.itxDaprePEm8a3TVwoQh0T3px.7uoIyadoAO0EG"
+	routes.Setup(app)
 
-		match := CheckPasswordHash(password, dbHash)
+	err := app.Listen(":3000")
+	if err != nil {
+		return
+	}
 
-		fmt.Println("Password:", password)
-		fmt.Println("Hash:    ", dbHash)
-		fmt.Println("Match:   ", match)
+	// app.Get("/", func(c *fiber.Ctx) error {
 
-		return c.SendString("Hello, World!2asasa22344")
+	// 	password := "123"
+	// 	dbHash := "$2a$12$lZRJf/dTrnSxJ.itxDaprePEm8a3TVwoQh0T3px.7uoIyadoAO0EG"
 
-	})
+	// 	match := CheckPasswordHash(password, dbHash)
+
+	// 	fmt.Println("Password:", password)
+	// 	fmt.Println("Hash:    ", dbHash)
+	// 	fmt.Println("Match:   ", match)
+
+	// 	return c.SendString("Hello, World!2asasa22344")
+
+	// })
 
 	app.Listen(":3000")
 }
 
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
+// func CheckPasswordHash(password, hash string) bool {
+// 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+// 	return err == nil
+// }
