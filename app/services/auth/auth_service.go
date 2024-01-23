@@ -13,9 +13,9 @@ func AuthenticateUser(username string, password string) models.User {
 
 	var userData models.User
 
-	result := db.Where("email = ?", username).First(&userData)
-
-	fmt.Println("Username: ", result.RowsAffected)
-
+	err := db.Where("email = ?", username).First(&userData)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return userData
 }
