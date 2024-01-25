@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/officemaid/app-api/app/data/response"
 	authservice "github.com/officemaid/app-api/app/services/auth"
@@ -27,8 +25,6 @@ func Authenticate(c *fiber.Ctx) error {
 	}
 
 	userData, err := authservice.AuthenticateUser(request.Username, request.Password)
-
-	fmt.Println(userData)
 
 	if err != nil {
 		// return

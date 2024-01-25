@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"github.com/officemaid/app-api/routes"
 	"gorm.io/gorm"
 )
@@ -10,6 +11,8 @@ var MysqlDB *gorm.DB
 
 func main() {
 	app := fiber.New()
+
+	godotenv.Load()
 
 	app.Use(func(c *fiber.Ctx) error {
 		c.Set("Cache-Control", "no-store")
