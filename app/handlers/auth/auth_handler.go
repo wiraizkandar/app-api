@@ -34,11 +34,31 @@ func Authenticate(c *fiber.Ctx) error {
 		})
 	}
 
+	// set access token cookie
+	cookieAccessToken := fiber.Cookie{
+		Name:     "jwt-access-token",
+		Value:    userData.AccessToken.AccessToken,
+		Expires:  userData.AccessToken.ExpiresIn,
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookieAccessToken)
+
+	// set refresh token cookie
+	cookieRefreshToken := fiber.Cookie{
+		Name:     "jwt-refresh-token",
+		Value:    userData.AccessToken.RefreshToken,
+		Expires:  userData.AccessToken.ExpiresIn,
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookieRefreshToken)
+
 	// return success response
 	return c.Status(fiber.StatusOK).JSON(response.ApiResponse{
 		Status:  response.SuccessStatus,
 		Message: "User authenticated successfully",
-		Data:    userData,
+		Data:    userData.User,
 	})
 
 }

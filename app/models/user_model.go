@@ -5,12 +5,12 @@ import (
 )
 
 type User struct {
-	Id              string    `json:"id"`
+	Id              string    `json:"-"`
 	Name            string    `json:"name"`
 	Email           string    `json:"email"`
-	EmailVerifiedAt time.Time `json:"email_verified_at"`
+	EmailVerifiedAt time.Time `json:"-"`
 	Password        string    `json:"-"`
-	RememberToken   bool      `json:"remember_token"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	RememberToken   bool      `json:"-"`
+	CreatedAt       time.Time `json:"-"`
+	UpdatedAt       time.Time `json:"-"`
 }

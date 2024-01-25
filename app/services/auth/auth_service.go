@@ -88,15 +88,24 @@ func createAccessToken(user models.User) (AccessToken, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Create the JWT string
-	tokenString, err := token.SignedString([]byte(os.Getenv("ACCESS_TOKEN_SECRET")))
+	accessToken, err := token.SignedString([]byte(os.Getenv("ACCESS_TOKEN_SECRET")))
+
+	refreshToken := uuid.New().String()
 
 	if err != nil {
 		return AccessToken{}, errors.New("failed to create token")
 	}
 
+	registerToken(accessToken, refreshToken, expirationTime)
+
 	return AccessToken{
-		AccessToken:  tokenString,
-		RefreshToken: uuid.New().String(),
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
 		ExpiresIn:    expirationTime,
 	}, nil
+}
+
+func registerToken(accessToken string, refreshToken string, expirationTime time.Time) (bool, error) {
+
+	return true, nil
 }
