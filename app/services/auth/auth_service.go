@@ -2,13 +2,15 @@ package authservice
 
 import (
 	"errors"
+	"log"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/officemaid/app-api/app/models"
-	"github.com/officemaid/app-api/database"
+	"github.com/officemaid/app-api/database/cassandra"
+	"github.com/officemaid/app-api/database/mysql"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -31,7 +33,7 @@ type AccessTokenClaims struct {
 
 func AuthenticateUser(username string, password string) (AuthenticatedUserInfo, error) {
 
-	db := database.Init()
+	db := mysql.Init()
 
 	var userData models.User
 
@@ -96,7 +98,8 @@ func createAccessToken(user models.User) (AccessToken, error) {
 		return AccessToken{}, errors.New("failed to create token")
 	}
 
-	registerToken(accessToken, refreshToken, expirationTime)
+	// register token in cassandra database
+	registerRefreshToken(user.Id, refreshToken, expirationTime)
 
 	return AccessToken{
 		AccessToken:  accessToken,
@@ -105,7 +108,22 @@ func createAccessToken(user models.User) (AccessToken, error) {
 	}, nil
 }
 
-func registerToken(accessToken string, refreshToken string, expirationTime time.Time) (bool, error) {
+func registerRefreshToken(userId string, refreshToken string, expirationTime time.Time) (bool, error) {
+
+	db := cassandra.Init()
+
+	defer db.Close()
+
+	// Execute the SQL query
+	if err := db.Query(`INSERT INTO access_tokens (user_id, access_token, expiry,is_revoke) VALUES (?, ?, ?, ?)`,
+		userId,
+		refreshToken,
+		expirationTime,
+		false,
+	).Exec(); err != nil {
+		log.Fatal(err)
+		return false, err
+	}
 
 	return true, nil
 }
