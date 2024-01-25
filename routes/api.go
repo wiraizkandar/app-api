@@ -12,14 +12,12 @@ func Setup(app *fiber.App) {
 	api := app.Group("/api")
 
 	// Version 1
-
 	v1 := api.Group("/v1")
 
 	// Auth Routes start
 	authGroup := v1.Group("/auth")
-
-	authGroup.Post("/sign-in", auth.SignIn)
+	authGroup.Post("/authenticate", auth.Authenticate)
 	// Auth Routes End
 
-	fmt.Println("Route Loaded2")
+	fmt.Println("Route Loaded")
 }
