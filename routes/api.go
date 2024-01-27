@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/officemaid/app-api/app/handlers/auth"
 	"github.com/officemaid/app-api/app/handlers/user"
+	"github.com/officemaid/app-api/app/middleware"
 )
 
 func Setup(app *fiber.App) {
@@ -21,7 +22,7 @@ func Setup(app *fiber.App) {
 	// Auth Routes End
 
 	// User Routes start
-	userGroup := v1.Group("/user")
+	userGroup := v1.Group("/user", middleware.AuthMiddleware)
 	userGroup.Get("/:id", user.GetUser)
 	// User Routes end
 
