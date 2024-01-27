@@ -55,9 +55,9 @@ func AuthMiddleware(c *fiber.Ctx) error {
  * @param ctx *fiber.Ctx
  * @return string
  */
-func getAuthorizationToken(ctx *fiber.Ctx) string {
+func getAuthorizationToken(c *fiber.Ctx) string {
 
-	authorizationToken := string(ctx.Request().Header.Peek("Authorization"))
+	authorizationToken := string(c.Request().Header.Peek("Authorization"))
 	authorizationToken = strings.Replace(authorizationToken, "Bearer ", "", 1)
 
 	return authorizationToken
