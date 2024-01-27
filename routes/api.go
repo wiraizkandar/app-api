@@ -19,6 +19,7 @@ func Setup(app *fiber.App) {
 	// Auth Routes start
 	authGroup := v1.Group("/auth")
 	authGroup.Post("/authenticate", auth.Authenticate)
+	authGroup.Post("/refresh", auth.RefreshToken)
 	// Auth Routes End
 
 	// User Routes start

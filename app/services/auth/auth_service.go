@@ -1,11 +1,13 @@
 package authservice
 
 import (
+	"context"
 	"errors"
 	"log"
 	"os"
 	"time"
 
+	"github.com/gocql/gocql"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/officemaid/app-api/app/models"
@@ -64,6 +66,50 @@ func AuthenticateUser(username string, password string) (AuthenticatedUserInfo, 
 		AccessToken: accessToken,
 	}, nil
 
+}
+
+func RefreshToken(userId string, refreshToken string) (AuthenticatedUserInfo, error) {
+
+	dbCassandra := cassandra.Init()
+
+	defer dbCassandra.Close()
+
+	ctx := context.Background()
+
+	var oauthAcessToken models.OauthAcessTokens
+
+	err := dbCassandra.Query(`select * from oauth.access_tokens WHERE user_id = ? AND access_token = ?`,
+		userId,
+		refreshToken).
+		WithContext(ctx).
+		Consistency(gocql.One).
+		Scan(&oauthAcessToken.UserId, &oauthAcessToken.AccessToken, &oauthAcessToken.Expiry, &oauthAcessToken.IsRevoke)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if time.Now().After(oauthAcessToken.Expiry) {
+		return AuthenticatedUserInfo{}, errors.New("refresh token expired")
+	}
+
+	dbMysql := mysql.Init()
+
+	var userData models.User
+
+	userResult := dbMysql.Where("id = ?", oauthAcessToken.UserId).First(&userData)
+
+	if userResult.Error != nil {
+		return AuthenticatedUserInfo{}, errors.New("no valid user found")
+	}
+
+	// register in authtoken table
+	accessToken, _ := createAccessToken(userData)
+
+	return AuthenticatedUserInfo{
+		User:        userData,
+		AccessToken: accessToken,
+	}, nil
 }
 
 /**
