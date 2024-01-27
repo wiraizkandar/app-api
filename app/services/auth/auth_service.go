@@ -31,6 +31,12 @@ type AccessTokenClaims struct {
 	jwt.RegisteredClaims
 }
 
+/**
+ * Authenticate user
+ * @param username string
+ * @param password string
+ * @return AuthenticatedUserInfo
+ */
 func AuthenticateUser(username string, password string) (AuthenticatedUserInfo, error) {
 
 	db := mysql.Init()
@@ -73,6 +79,11 @@ func isPasswordMatch(userPassword string, password string) bool {
 	return err == nil
 }
 
+/**
+ * Create access token
+ * @param user models.User
+ * @return AccessToken
+ */
 func createAccessToken(user models.User) (AccessToken, error) {
 
 	expirationTime := time.Now().Add(5 * time.Minute)

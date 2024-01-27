@@ -24,21 +24,6 @@ func main() {
 	// 	AllowOrigins:     "*",
 	// }))
 
-	// app.Get("/", func(c *fiber.Ctx) error {
-
-	// 	// password := "123"
-	// 	// dbHash := "$2a$12$lZRJf/dTrnSxJ.itxDaprePEm8a3TVwoQh0T3px.7uoIyadoAO0EG"
-
-	// 	// match := CheckPasswordHash(password, dbHash)
-
-	// 	// fmt.Println("Password:", password)
-	// 	// fmt.Println("Hash:    ", dbHash)
-	// 	// fmt.Println("Match:   ", match)
-
-	// 	return c.SendString("Hello, World!2asasa22344")
-
-	// })
-
 	routes.Setup(app)
 
 	err := app.Listen(":3000")

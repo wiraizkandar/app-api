@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/officemaid/app-api/app/handlers/auth"
+	"github.com/officemaid/app-api/app/handlers/user"
 )
 
 func Setup(app *fiber.App) {
@@ -18,6 +19,11 @@ func Setup(app *fiber.App) {
 	authGroup := v1.Group("/auth")
 	authGroup.Post("/authenticate", auth.Authenticate)
 	// Auth Routes End
+
+	// User Routes start
+	userGroup := v1.Group("/user")
+	userGroup.Get("/:id", user.GetUser)
+	// User Routes end
 
 	fmt.Println("Route Loaded")
 }

@@ -12,7 +12,7 @@ type SignInRequest struct {
 }
 
 /**
- * @api {post} /api/v1/auth/sign-in Sign In
+ * @api {post} /api/v1/auth/authenticate Sign In
  */
 func Authenticate(c *fiber.Ctx) error {
 
