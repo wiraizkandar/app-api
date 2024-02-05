@@ -1,13 +1,33 @@
 package main
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
+	"github.com/officemaid/app-api/routes"
+	"gorm.io/gorm"
+)
+
+var MysqlDB *gorm.DB
 
 func main() {
-    app := fiber.New()
+	app := fiber.New()
 
-    app.Get("/", func(c *fiber.Ctx) error {
-        return c.SendString("Hello, World!2344")
-    })
+	godotenv.Load()
 
-    app.Listen(":3000")
+	app.Use(func(c *fiber.Ctx) error {
+		c.Set("Cache-Control", "no-store")
+		return c.Next()
+	})
+
+	// app.Use(cors.New(cors.Config{
+	// 	AllowCredentials: true,
+	// 	AllowOrigins:     "*",
+	// }))
+
+	routes.Setup(app)
+
+	err := app.Listen(":3000")
+	if err != nil {
+		return
+	}
 }
